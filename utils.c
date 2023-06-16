@@ -6,7 +6,7 @@
 /*   By: vmustone <vmustone@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 12:45:32 by vmustone          #+#    #+#             */
-/*   Updated: 2023/05/18 12:59:41 by vmustone         ###   ########.fr       */
+/*   Updated: 2023/06/16 18:05:52 by vmustone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,4 +37,12 @@ int	ft_atoi(const char *str)
 		str++;
 	}
 	return (res * sign);
+}
+
+int ft_isdigit(int c)
+{
+	if (c >= '0' && c <= '9')
+		return (0);
+	else
+		return (1);
 }
