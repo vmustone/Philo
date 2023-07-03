@@ -6,7 +6,7 @@
 /*   By: vmustone <vmustone@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 12:45:32 by vmustone          #+#    #+#             */
-/*   Updated: 2023/06/16 18:05:52 by vmustone         ###   ########.fr       */
+/*   Updated: 2023/07/03 17:29:14 by vmustone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,4 +45,12 @@ int ft_isdigit(int c)
 		return (0);
 	else
 		return (1);
+}
+
+long long timestamp(void)
+{
+	struct timeval tv;
+
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }

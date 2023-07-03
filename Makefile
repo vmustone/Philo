@@ -6,7 +6,7 @@
 #    By: vmustone <vmustone@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/18 12:28:52 by vmustone          #+#    #+#              #
-#    Updated: 2023/06/07 10:39:13 by vmustone         ###   ########.fr        #
+#    Updated: 2023/07/03 15:03:25 by vmustone         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ Name = philo
 
 Flags = -Wall -Werror -Wextra -pthread
 
-Source = main.c utils.c init.c
+Source = main.c utils.c init.c philo.c
 
 Objects = $(Source:%.c=%.o)
 
