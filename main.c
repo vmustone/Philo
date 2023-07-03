@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vmustone <vmustone@student.42.fr>          +#+  +:+       +#+        */
+/*   By: villemustonen <villemustonen@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 12:24:20 by vmustone          #+#    #+#             */
-/*   Updated: 2023/06/16 19:08:44 by vmustone         ###   ########.fr       */
+/*   Updated: 2023/06/22 17:48:25 by villemuston      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,6 @@ int	main(int argc, char **argv)
 	{
 		return (0);
 	}
-	
+	init_mutex(&vars);
 	return (0);
 }
