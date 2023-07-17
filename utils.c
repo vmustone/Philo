@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: villemustonen <villemustonen@student.42    +#+  +:+       +#+        */
+/*   By: vmustone <vmustone@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 12:45:32 by vmustone          #+#    #+#             */
-/*   Updated: 2023/07/16 20:33:49 by villemuston      ###   ########.fr       */
+/*   Updated: 2023/07/17 16:29:56 by vmustone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	ft_atoi(const char *str)
 	return (res * sign);
 }
 
-int ft_isdigit(int c)
+int	ft_isdigit(int c)
 {
 	if (c >= '0' && c <= '9')
 		return (0);
@@ -47,10 +47,31 @@ int ft_isdigit(int c)
 		return (1);
 }
 
-long long timestamp(void)
+long long	timestamp(void)
 {
-	struct timeval tv;
+	struct timeval	tv;
 
 	gettimeofday(&tv, NULL);
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
+}
+
+void	ft_usleep(int time)
+{
+	long long	i;
+
+	i = timestamp();
+	while (timestamp() - i < time)
+		usleep(time / 10);
+}
+
+void	print(t_vars *vars, int philo, char *str)
+{
+	pthread_mutex_lock(&(vars->print));
+	if (!(vars->dead))
+	{
+		printf("%lld ", timestamp() - vars->start);
+		printf("%d ", philo + 1);
+		printf("%s\n", str);
+	}
+	pthread_mutex_unlock(&(vars->print));
 }

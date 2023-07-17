@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: villemustonen <villemustonen@student.42    +#+  +:+       +#+        */
+/*   By: vmustone <vmustone@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/07 10:37:00 by vmustone          #+#    #+#             */
-/*   Updated: 2023/07/11 14:21:35 by villemuston      ###   ########.fr       */
+/*   Updated: 2023/07/17 16:10:41 by vmustone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int	is_number(char **argv)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	i = 1;
 	while (argv[i])
@@ -35,10 +35,7 @@ int	is_number(char **argv)
 int	parse_argv(t_vars *vars, char **argv)
 {
 	if (is_number(argv))
-	{
-		printf("argument is not number");
 		return (1);
-	}
 	vars->num_of_philos = ft_atoi(argv[1]);
 	vars->time_to_die = ft_atoi(argv[2]);
 	vars->time_to_eat = ft_atoi(argv[3]);
@@ -52,7 +49,7 @@ int	parse_argv(t_vars *vars, char **argv)
 
 int	init_mutex(t_vars *vars)
 {
-	int i;
+	int	i;
 
 	i = vars->num_of_philos;
 	vars->fork = malloc(sizeof(pthread_mutex_t) * vars->num_of_philos);
@@ -64,6 +61,10 @@ int	init_mutex(t_vars *vars)
 		if (pthread_mutex_init(&(vars->fork[i]), NULL))
 			return (1);
 	}
+	if (pthread_mutex_init(&(vars->lock), NULL))
+		return (1);
+	if (pthread_mutex_init(&(vars->print), NULL))
+		return (1);
 	return (0);
 }
 
@@ -72,6 +73,8 @@ int	init_philo(t_vars *vars)
 	int	i;
 
 	i = 0;
+	vars->all_ate = 0;
+	vars->dead = 0;
 	vars->philo = malloc(sizeof(t_philo) * vars->num_of_philos);
 	if (!vars->philo)
 		return (1);
