@@ -3,16 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: vmustone <vmustone@student.42.fr>          +#+  +:+       +#+         #
+#    By: villemustonen <villemustonen@student.42    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/18 12:28:52 by vmustone          #+#    #+#              #
-#    Updated: 2023/07/03 15:03:25 by vmustone         ###   ########.fr        #
+#    Updated: 2023/07/11 15:25:52 by villemuston      ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 Name = philo
 
-Flags = -Wall -Werror -Wextra -pthread
+Flags = -Wall -Werror -Wextra -pthread -fsanitize=address
 
 Source = main.c utils.c init.c philo.c
 

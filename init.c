@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vmustone <vmustone@student.42.fr>          +#+  +:+       +#+        */
+/*   By: villemustonen <villemustonen@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/07 10:37:00 by vmustone          #+#    #+#             */
-/*   Updated: 2023/07/03 17:27:28 by vmustone         ###   ########.fr       */
+/*   Updated: 2023/07/11 14:21:35 by villemuston      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,56 +32,6 @@ int	is_number(char **argv)
 	return (0);
 }
 
-void	init_mutex(t_vars *vars)
-{
-	int	i;
-
-	i = 0;
-	if (pthread_mutex_init(&(vars->lock), NULL))
-	{
-		printf("error");
-		exit(1);
-	}
-	vars->fork = malloc(sizeof(pthread_mutex_t)
-					* vars->num_of_philos);
-	if (!vars->fork)
-	{
-		printf("error");
-		exit(1);
-	}
-	while (i < vars->num_of_philos)
-	{
-		if (pthread_mutex_init(&(vars->fork[i]), NULL))
-		{
-			printf("error");
-			exit(1);
-		}
-		i++;
-	}
-	
-}
-
-void	init_philo(t_philo **philo, t_vars *vars)
-{
-	int	i;
-
-	i = -1;
-	*philo = malloc(sizeof(t_philo) * vars->num_of_philos);
-	if (!*philo)
-	{
-		printf("error");
-		exit(1);
-	}
-	while (++i < vars->num_of_philos)
-	{
-		(*philo)[i].id = i;
-		(*philo)[i].eat_count = 0;
-		(*philo)[i].last_eat = timestamp();
-		(*philo)[i].left = i;
-		(*philo)[i].right = ((i + 1) % vars->num_of_philos);
-	}
-}
-
 int	parse_argv(t_vars *vars, char **argv)
 {
 	if (is_number(argv))
@@ -97,5 +47,43 @@ int	parse_argv(t_vars *vars, char **argv)
 		vars->num_of_time_must_eat = ft_atoi(argv[5]);
 	if (argv[5] && vars->num_of_time_must_eat == 0)
 		return (1);
+	return (0);
+}
+
+int	init_mutex(t_vars *vars)
+{
+	int i;
+
+	i = vars->num_of_philos;
+	vars->fork = malloc(sizeof(pthread_mutex_t) * vars->num_of_philos);
+	if (!vars->fork)
+		return (1);
+	while (i >= 0)
+	{
+		i--;
+		if (pthread_mutex_init(&(vars->fork[i]), NULL))
+			return (1);
+	}
+	return (0);
+}
+
+int	init_philo(t_vars *vars)
+{
+	int	i;
+
+	i = 0;
+	vars->philo = malloc(sizeof(t_philo) * vars->num_of_philos);
+	if (!vars->philo)
+		return (1);
+	while (i < vars->num_of_philos)
+	{
+		vars->philo[i].id = i;
+		vars->philo[i].eat_count = 0;
+		vars->philo[i].left_f = i;
+		vars->philo[i].right_f = (i + 1) % vars->num_of_philos;
+		vars->philo[i].last_eat = 0;
+		vars->philo[i].vars = vars;
+		i++;
+	}
 	return (0);
 }

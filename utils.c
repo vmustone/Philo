@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vmustone <vmustone@student.42.fr>          +#+  +:+       +#+        */
+/*   By: villemustonen <villemustonen@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 12:45:32 by vmustone          #+#    #+#             */
-/*   Updated: 2023/07/03 17:29:14 by vmustone         ###   ########.fr       */
+/*   Updated: 2023/07/16 20:33:49 by villemuston      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,5 +52,5 @@ long long timestamp(void)
 	struct timeval tv;
 
 	gettimeofday(&tv, NULL);
-	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }

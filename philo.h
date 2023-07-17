@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vmustone <vmustone@student.42.fr>          +#+  +:+       +#+        */
+/*   By: villemustonen <villemustonen@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 12:25:16 by vmustone          #+#    #+#             */
-/*   Updated: 2023/07/03 16:32:45 by vmustone         ###   ########.fr       */
+/*   Updated: 2023/07/13 22:55:09 by villemuston      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,39 +18,37 @@
 # include <pthread.h>
 # include <sys/time.h>
 
-typedef struct	s_vars
+typedef struct		s_philo
 {
-	int		num_of_philos;
-	int		time_to_die;
-	int		time_to_eat;
-	int		time_to_sleep;
-	int 	num_of_time_must_eat;
-	pthread_mutex_t lock;
-	pthread_mutex_t *fork;
-}				t_vars;
-
-typedef struct	s_philo
-{
-	int				left;
-	int				right;
+	int				left_f;
+	int				right_f;
 	int 			id;
 	int				eat_count;
-	int				is_eating;
 	long long		last_eat;
 	pthread_t		thread;
-	t_vars 			*vars;
-}				t_philo;
+	struct s_vars	*vars;
+}					t_philo;
+
+typedef struct		s_vars
+{
+	int				num_of_philos;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
+	int 			num_of_time_must_eat;
+	long long		start;
+	pthread_mutex_t *fork;
+	t_philo			*philo;
+}					t_vars;
 
 int			ft_atoi(const char *str);
 int 		ft_isdigit(int c);
 int			parse_argv(t_vars *vars, char **argv);
-void		init_mutex(t_vars *vars);
-void		init_philo(t_philo **philo, t_vars *vars);
+int			init_mutex(t_vars *vars);
+int			init_philo(t_vars *vars);
 int			is_number(char **argv);
 long long	timestamp(void);
-void		philo_eating(t_philo *philo);
-void		philo_sleeping(t_philo *philo);
-void		philo_thinking(t_philo *philo);
-void		*philosopher(void *arg);
+void		create_philo_threads(t_vars *vars);
+void		*philo_thread(void *arg);
 
 #endif

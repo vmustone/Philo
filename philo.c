@@ -1,50 +1,96 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: villemustonen <villemustonen@student.42    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/07/11 14:40:51 by villemuston       #+#    #+#             */
+/*   Updated: 2023/07/16 21:07:48 by villemuston      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-void	philo_eating(t_philo *philo)
+void	ft_usleep(int time)
 {
-	pthread_mutex_lock(&philo->vars->fork[philo->left]);
-	pthread_mutex_lock(&philo->vars->fork[philo->right]);
-	philo->is_eating = 1;
-	philo->last_eat = timestamp();
-	usleep(philo->vars->time_to_sleep * 1000);
-	pthread_mutex_unlock(&philo->vars->fork[philo->left]);
-	pthread_mutex_unlock(&philo->vars->fork[philo->right]);
-	philo->is_eating = 0;
-	philo->eat_count++;
-}
-void	philo_sleeping(t_philo *philo)
-{
-	philo->last_eat = timestamp();
-	usleep(philo->vars->time_to_sleep * 1000);
+	long long i;
+
+	i = timestamp();
+	while (timestamp() - i < time)
+		usleep(time / 10);
 }
 
-void	philo_thinking(t_philo *philo)
+void	print(t_vars *vars, int philo, char *str)
 {
-	philo->last_eat = timestamp();
-	usleep(philo->vars->time_to_sleep * 1000);
+	printf("%lld ", timestamp() - vars->start);
+	printf("%d ", philo + 1);
+	printf("%s\n", str);
 }
 
-void	*philosopher(void *arg)
+void philo_eating(t_philo *philo)
 {
-	t_philo *philo;
+    t_vars *vars = philo->vars;
+
+    pthread_mutex_lock(&(vars->fork[philo->left_f]));
+    print(vars, philo->id, "has taken a fork");
+    pthread_mutex_lock(&(vars->fork[philo->right_f]));
+    print(vars, philo->id, "has taken a fork");
+
+    ft_usleep(vars->time_to_eat);
+
+    (philo->eat_count)++;
+
+    pthread_mutex_unlock(&(vars->fork[philo->left_f]));
+    pthread_mutex_unlock(&(vars->fork[philo->right_f]));
+}
+
+
+void	Philo_quit(t_vars *vars, t_philo *philo)
+{
+	int	i;
+
+	i = 0;
+	while (i < vars->num_of_philos)
+	{
+		pthread_join(philo[i].thread, NULL);
+		i++;
+	}
+}
+
+void	*philo_thread(void *arg)
+{
+	t_philo	*philo;
+	t_vars	*vars;
 
 	philo = (t_philo *)arg;
-	while (1)
+	while(1)
 	{
-		if ((timestamp() - philo->last_eat) > philo->vars->time_to_die)
-		{
-			pthread_mutex_lock(&philo->vars->lock);
-			printf("%lld died %d\n", timestamp(), philo->id + 1);
-			pthread_mutex_unlock(&philo->vars->lock);
-			break;	
-		}
 		philo_eating(philo);
-		if (philo->vars->num_of_time_must_eat > 0 && philo->eat_count >= philo->vars->num_of_time_must_eat)
-		{
-			break;
-		}
-		philo_thinking(philo);
-		philo_sleeping(philo);
+		print(vars, philo->id, "is sleeping");
+		ft_usleep(vars->time_to_sleep);
+		print(vars, philo->id, "is thinking");
 	}
 	return (NULL);
+}
+
+void	create_philo_threads(t_vars *vars)
+{
+	int	i;
+	t_philo *philo;
+	
+	i = 0;
+	philo = vars->philo;
+	vars->start = timestamp();
+	while (i < vars->num_of_philos)
+	{
+		if (pthread_create(&(vars->philo[i].thread), NULL, philo_thread, &(vars->philo[i])))
+		{
+			printf("error in creating threads");
+			return ;
+		}
+		vars->philo[i].last_eat = timestamp();
+		i++;
+	}
+	Philo_quit(vars, philo);
 }
