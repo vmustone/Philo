@@ -6,7 +6,7 @@
 /*   By: vmustone <vmustone@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 12:45:32 by vmustone          #+#    #+#             */
-/*   Updated: 2023/07/17 16:29:56 by vmustone         ###   ########.fr       */
+/*   Updated: 2023/07/19 16:28:11 by vmustone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	ft_usleep(int time)
 
 	i = timestamp();
 	while (timestamp() - i < time)
-		usleep(time / 10);
+		usleep(300);
 }
 
 void	print(t_vars *vars, int philo, char *str)

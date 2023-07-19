@@ -6,7 +6,7 @@
 /*   By: vmustone <vmustone@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/07 10:37:00 by vmustone          #+#    #+#             */
-/*   Updated: 2023/07/17 16:10:41 by vmustone         ###   ########.fr       */
+/*   Updated: 2023/07/19 19:18:04 by vmustone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,12 @@ int	parse_argv(t_vars *vars, char **argv)
 	vars->time_to_die = ft_atoi(argv[2]);
 	vars->time_to_eat = ft_atoi(argv[3]);
 	vars->time_to_sleep = ft_atoi(argv[4]);
-	if (argv[5])
+	if (argv[5] && (ft_atoi(argv[5]) > 0))
 		vars->num_of_time_must_eat = ft_atoi(argv[5]);
-	if (argv[5] && vars->num_of_time_must_eat == 0)
+	else
+		vars->num_of_time_must_eat = 0;
+	if (vars->num_of_philos <= 0 || vars->time_to_die <= 0
+		|| vars->time_to_eat <= 0 || vars->time_to_sleep <= 0)
 		return (1);
 	return (0);
 }
@@ -51,15 +54,15 @@ int	init_mutex(t_vars *vars)
 {
 	int	i;
 
-	i = vars->num_of_philos;
+	i = 0;
 	vars->fork = malloc(sizeof(pthread_mutex_t) * vars->num_of_philos);
 	if (!vars->fork)
 		return (1);
-	while (i >= 0)
+	while (i < vars->num_of_philos)
 	{
-		i--;
 		if (pthread_mutex_init(&(vars->fork[i]), NULL))
 			return (1);
+		i++;
 	}
 	if (pthread_mutex_init(&(vars->lock), NULL))
 		return (1);

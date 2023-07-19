@@ -6,15 +6,15 @@
 #    By: vmustone <vmustone@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/18 12:28:52 by vmustone          #+#    #+#              #
-#    Updated: 2023/07/17 13:03:47 by vmustone         ###   ########.fr        #
+#    Updated: 2023/07/19 19:11:51 by vmustone         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 Name = philo
 
-Flags = -Wall -Werror -Wextra -pthread
+Flags = -Wall -Werror -Wextra -pthread -O3
 
-Source = main.c utils.c init.c philo.c
+Source = main.c utils.c init.c philo.c main_thread.c
 
 Objects = $(Source:%.c=%.o)
 
@@ -32,6 +32,6 @@ fclean:	clean
 re: fclean all
 
 %.o: %.c
-	cc $(FLAGS) -c -o $@ $^
+	cc $(Flags) -c -o $@ $^
 
 .phony:

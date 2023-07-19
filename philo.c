@@ -6,58 +6,54 @@
 /*   By: vmustone <vmustone@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 14:40:51 by villemuston       #+#    #+#             */
-/*   Updated: 2023/07/17 16:28:42 by vmustone         ###   ########.fr       */
+/*   Updated: 2023/07/19 18:59:11 by vmustone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	check_philo_status(t_vars *vars, t_philo *philo)
+int	check_death(t_vars *vars)
 {
 	int	i;
 
-	i = 0;
-	while (vars->all_ate == 0)
-	{
-		while (i < vars->num_of_philos && vars->dead == 0)
-		{
-			pthread_mutex_lock(&(vars->lock));
-			if ((timestamp() - philo[i].last_eat) > vars->time_to_die)
-			{
-				print(vars, i, "died");
-				vars->dead = 1;
-			}
-			pthread_mutex_unlock(&(vars->lock));
-			usleep(100);
-			i++;
-		}
-		if (vars->dead)
-			break ;
-		i = -1;
-		while (++i < vars->num_of_philos
-			&& philo[i].eat_count >= vars->num_of_time_must_eat)
-			if (i == vars->num_of_philos)
-				vars->all_ate = 1;
-	}
+	pthread_mutex_lock(&(vars->lock));
+	i = vars->dead;
+	pthread_mutex_unlock(&(vars->lock));
+	return (i);
 }
 
-void	philo_eating(t_philo *philo)
+int	check_all_ate(t_vars *vars)
 {
-	t_vars	*vars;
+	int	i;
 
-	vars = philo->vars;
-	pthread_mutex_lock(&(vars->fork[philo->left_f]));
-	print(vars, philo->id, "has taken a fork");
-	pthread_mutex_lock(&(vars->fork[philo->right_f]));
-	print(vars, philo->id, "has taken a fork");
 	pthread_mutex_lock(&(vars->lock));
-	print(vars, philo->id, "is eating");
-	philo->last_eat = timestamp();
+	i = vars->all_ate;
 	pthread_mutex_unlock(&(vars->lock));
-	ft_usleep(vars->time_to_eat);
+	return (i);
+}
+
+static void	philo_eating(t_philo *philo)
+{
+	pthread_mutex_lock(&(philo->vars->fork[philo->right_f]));
+	print(philo->vars, philo->id, "has taken a fork");
+	pthread_mutex_lock(&(philo->vars->fork[philo->left_f]));
+	print(philo->vars, philo->id, "has taken a fork");
+	if (philo->vars->dead == 1)
+	{
+		pthread_mutex_unlock(&(philo->vars->fork[philo->right_f]));
+		pthread_mutex_unlock(&(philo->vars->fork[philo->left_f]));
+		return ;
+	}
+	print(philo->vars, philo->id, "is eating");
+	pthread_mutex_lock(&(philo->vars->lock));
+	philo->last_eat = timestamp();
+	pthread_mutex_unlock(&(philo->vars->lock));
+	ft_usleep(philo->vars->time_to_eat);
+	pthread_mutex_lock(&(philo->vars->lock));
 	(philo->eat_count)++;
-	pthread_mutex_unlock(&(vars->fork[philo->left_f]));
-	pthread_mutex_unlock(&(vars->fork[philo->right_f]));
+	pthread_mutex_unlock(&(philo->vars->lock));
+	pthread_mutex_unlock(&(philo->vars->fork[philo->right_f]));
+	pthread_mutex_unlock(&(philo->vars->fork[philo->left_f]));
 }
 
 void	*philo_thread(void *arg)
@@ -67,56 +63,20 @@ void	*philo_thread(void *arg)
 
 	philo = (t_philo *)arg;
 	vars = philo->vars;
-	if (philo->id % 2)
-		usleep(15000);
-	while (vars->dead == 0)
+	if (philo->id % 2 == 0)
+		usleep(10000);
+	while (1)
 	{
+		if (philo->vars->num_of_philos == 1)
+			break ;
 		philo_eating(philo);
-		if (vars->all_ate)
+		if (check_all_ate(vars) == 1 || vars->dead == 1)
 			break ;
 		print(vars, philo->id, "is sleeping");
 		ft_usleep(vars->time_to_sleep);
+		if (check_death(vars))
+			break ;
 		print(vars, philo->id, "is thinking");
 	}
 	return (NULL);
-}
-
-void	destroy_philo(t_vars *vars, t_philo *philo)
-{
-	int	i;
-
-	i = 0;
-	while (i < vars->num_of_philos)
-	{
-		pthread_join(philo[i].thread, NULL);
-		i++;
-	}
-	i = 0;
-	while (i < vars->num_of_philos)
-	{	
-		pthread_mutex_destroy(&(vars->fork[i]));
-		i++;
-	}
-	pthread_mutex_destroy(&(vars->print));
-}
-
-int	create_philo_threads(t_vars *vars)
-{
-	int		i;
-	t_philo	*philo;
-
-	i = 0;
-	philo = vars->philo;
-	vars->start = timestamp();
-	while (i < vars->num_of_philos)
-	{
-		if (pthread_create(&(vars->philo[i].thread),
-				NULL, philo_thread, &(vars->philo[i])))
-			return (1);
-		vars->philo[i].last_eat = timestamp();
-		i++;
-	}
-	check_philo_status(vars, philo);
-	destroy_philo(vars, philo);
-	return (0);
 }
