@@ -6,7 +6,7 @@
 /*   By: vmustone <vmustone@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 14:40:51 by villemuston       #+#    #+#             */
-/*   Updated: 2023/07/19 18:59:11 by vmustone         ###   ########.fr       */
+/*   Updated: 2023/07/20 14:50:44 by vmustone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static void	philo_eating(t_philo *philo)
 	pthread_mutex_lock(&(philo->vars->lock));
 	philo->last_eat = timestamp();
 	pthread_mutex_unlock(&(philo->vars->lock));
-	ft_usleep(philo->vars->time_to_eat);
+	ft_usleep(philo->vars->time_to_eat, philo->vars);
 	pthread_mutex_lock(&(philo->vars->lock));
 	(philo->eat_count)++;
 	pthread_mutex_unlock(&(philo->vars->lock));
@@ -73,7 +73,7 @@ void	*philo_thread(void *arg)
 		if (check_all_ate(vars) == 1 || vars->dead == 1)
 			break ;
 		print(vars, philo->id, "is sleeping");
-		ft_usleep(vars->time_to_sleep);
+		ft_usleep(vars->time_to_sleep, vars);
 		if (check_death(vars))
 			break ;
 		print(vars, philo->id, "is thinking");

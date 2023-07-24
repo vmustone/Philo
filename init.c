@@ -6,7 +6,7 @@
 /*   By: vmustone <vmustone@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/07 10:37:00 by vmustone          #+#    #+#             */
-/*   Updated: 2023/07/19 19:18:04 by vmustone         ###   ########.fr       */
+/*   Updated: 2023/07/20 15:40:11 by vmustone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,15 @@ int	parse_argv(t_vars *vars, char **argv)
 	vars->time_to_die = ft_atoi(argv[2]);
 	vars->time_to_eat = ft_atoi(argv[3]);
 	vars->time_to_sleep = ft_atoi(argv[4]);
-	if (argv[5] && (ft_atoi(argv[5]) > 0))
-		vars->num_of_time_must_eat = ft_atoi(argv[5]);
-	else
-		vars->num_of_time_must_eat = 0;
 	if (vars->num_of_philos <= 0 || vars->time_to_die <= 0
 		|| vars->time_to_eat <= 0 || vars->time_to_sleep <= 0)
 		return (1);
+	if (argv[5])
+	{
+		vars->num_of_time_must_eat = ft_atoi(argv[5]);
+		if (vars->num_of_time_must_eat <= 0)
+			return (1);
+	}
 	return (0);
 }
 

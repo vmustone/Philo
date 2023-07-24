@@ -6,7 +6,7 @@
 /*   By: vmustone <vmustone@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 12:45:32 by vmustone          #+#    #+#             */
-/*   Updated: 2023/07/19 16:28:11 by vmustone         ###   ########.fr       */
+/*   Updated: 2023/07/20 15:27:46 by vmustone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,13 +55,17 @@ long long	timestamp(void)
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
-void	ft_usleep(int time)
+void	ft_usleep(int time, t_vars *vars)
 {
 	long long	i;
 
 	i = timestamp();
 	while (timestamp() - i < time)
+	{
+		if (check_death(vars) == 1 || check_all_ate(vars) == 1)
+			break ;
 		usleep(300);
+	}
 }
 
 void	print(t_vars *vars, int philo, char *str)
